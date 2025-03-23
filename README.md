@@ -15,7 +15,7 @@ This is a streamlit based webUI tool that takes podcast transcript as input and 
 
 ```bash
 # Clone the repo
-git clone
+git clone https://github.com/cybermax-008/blog-it.git
 cd blog-it
 
 # Create a virtual environment
