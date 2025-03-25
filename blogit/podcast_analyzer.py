@@ -1,6 +1,21 @@
 import json
 import re
 from .gemini_config import get_model
+from youtube_transcript_api import YouTubeTranscriptApi
+
+# Function to extract transcript details from a YouTube video URL
+def extract_transcript_details(youtube_video_url):
+    try:
+        video_id = youtube_video_url.split("=")[1]
+        transcript_text = YouTubeTranscriptApi.get_transcript(video_id)
+
+        transcript = ""
+        for i in transcript_text:
+            transcript += " " + i["text"]
+
+        return transcript
+    except Exception as e:
+        raise e
 
 def analyze_podcast(podcast_text):
 
