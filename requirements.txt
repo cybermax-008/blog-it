@@ -4,4 +4,4 @@ streamlit
 watchdog
 markdown
 aiohttp
-youtube_transcript_api
+youtube_transcript_api>=1.1.0

@@ -38,6 +38,56 @@ async def generate_section_content(transcript, section):
         section_index = section.get('index', 0)
         return section_index, f"Error generating content for section {section['title']}: {e}"
 
+async def modify_section_content(transcript, section, custom_prompt):
+    """
+    Modify an existing section based on custom user instructions
+    
+    Args:
+        transcript: The original podcast transcript
+        section: Dictionary containing section info (title, content, etc.)
+        custom_prompt: User's custom instructions for modification
+    
+    Returns:
+        Modified section content as string
+    """
+    
+    system_instruction = f"""
+    You are an expert content editor specializing in refining blog post sections based on specific user instructions.
+    
+    Your task is to modify an existing blog section according to the user's custom instructions while:
+    1. Maintaining the core factual information from the original podcast transcript
+    2. Preserving the overall structure and markdown formatting
+    3. Keeping the section title consistent (# {section['title']})
+    4. Following the user's specific modification instructions precisely
+    5. Ensuring the content remains SEO-optimized and engaging
+    6. Maintaining appropriate length (not too short or excessively long unless specifically requested)
+    """
+
+    model = get_model(model_type="content", system_instruction=system_instruction)
+
+    prompt = f"""
+    Please modify the following blog section according to the user's specific instructions:
+
+    ORIGINAL SECTION CONTENT:
+    {section['content']}
+
+    USER'S MODIFICATION INSTRUCTIONS:
+    {custom_prompt}
+
+    ORIGINAL PODCAST TRANSCRIPT (for reference):
+    {transcript}
+
+    Please provide the modified section content in Markdown format, ensuring it still accurately represents the podcast content while following the user's instructions.
+    """
+
+    try:
+        # Generate the modified content
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Error modifying section {section['title']}:", e)
+        return f"Error modifying section {section['title']}: {e}"
+
 async def generate_blog_content(transcript, sections):
 
     # Check for introduction and conclusion sections and add them if not present
